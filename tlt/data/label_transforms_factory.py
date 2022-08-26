@@ -9,7 +9,7 @@ from torchvision import transforms
 
 from .random_augment_label import rand_augment_transform
 from timm.data.constants import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD, DEFAULT_CROP_PCT
-from timm.data.transforms import _pil_interp, RandomResizedCropAndInterpolation, ToNumpy, ToTensor
+from timm.data.transforms import str_to_pil_interp, RandomResizedCropAndInterpolation, ToNumpy, ToTensor
 from timm.data.random_erasing import RandomErasing
 import random
 
@@ -51,7 +51,7 @@ class RandomResizedCropAndInterpolationWithCoords(RandomResizedCropAndInterpolat
         if interpolation == 'random':
             self.interpolation = _RANDOM_INTERPOLATION
         else:
-            self.interpolation = _pil_interp(interpolation)
+            self.interpolation = str_to_pil_interp(interpolation)
         self.scale = scale
         self.ratio = ratio
 
@@ -137,7 +137,7 @@ def transforms_imagenet_train(
             img_mean=tuple([min(255, round(255 * x)) for x in mean]),
         )
         if interpolation and interpolation != 'random':
-            aa_params['interpolation'] = _pil_interp(interpolation)
+            aa_params['interpolation'] = str_to_pil_interp(interpolation)
         if auto_augment.startswith('rand'):
             secondary_tfl += [rand_augment_transform(auto_augment, aa_params)]
 
